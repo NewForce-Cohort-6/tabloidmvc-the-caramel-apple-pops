@@ -86,7 +86,7 @@ namespace TabloidMVC.Controllers
         {
             int userId = GetCurrentUserProfileId();
 
-            Post post = _postRepository.GetUserPostById(id, userId);
+            Post post = _postRepository.GetPublishedPostById(id);
 
             return View(post);
         }

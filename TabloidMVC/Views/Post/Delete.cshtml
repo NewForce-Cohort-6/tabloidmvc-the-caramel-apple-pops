@@ -69,6 +69,6 @@
     
     <form asp-action="Delete">
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        @Html.ActionLink("Back to Post", "Details", new { id = Model.Id })
     </form>
 </div>
