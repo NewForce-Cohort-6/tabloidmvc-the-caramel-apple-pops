@@ -116,7 +116,8 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
                         WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
-                        AND p.UserProfileId = @UserProfileId";
+                        AND p.UserProfileId = @UserProfileId
+                        ORDER By PublishDateTime DESC";
                     
                     cmd.Parameters.AddWithValue("@UserProfileId", userProfileId);
 
