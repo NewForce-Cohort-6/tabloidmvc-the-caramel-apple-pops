@@ -53,10 +53,10 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UserProfileId)
+                    @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryId)
+                    @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 @*     <td>
             @Html.DisplayFor(modelItem => item.Content)
