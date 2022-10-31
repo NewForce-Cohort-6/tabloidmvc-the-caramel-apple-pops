@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Reflection.PortableExecutable;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
-using Microsoft.Data.SqlClient;
+using TabloidMVC.Utils;
 
 
 
@@ -10,18 +14,7 @@ namespace TabloidMVC.Repositories
     public class CategoryRepository : BaseRepository, ICategoryRepository
     {
         public CategoryRepository(IConfiguration config) : base(config) { }
-
-        public void AddCategory(Category entry)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void DeleteCategory(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public List<Category> GetAll()
+ public List<Category> GetAll()
         {
             using (var conn = Connection)
             {
@@ -49,14 +42,40 @@ namespace TabloidMVC.Repositories
             }
         }
 
+
+        public void AddCategory(Category category)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO Category (Name)
+                        OUTPUT INSERTED.ID
+                        VALUES (@Name)";
+                    cmd.Parameters.AddWithValue("@Name", category.Name);
+                    
+                    category.Id = (int)cmd.ExecuteScalar();
+                    
+                }
+            }
+        }
+
+        //public void DeleteCategory(int id)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
+
+
         public Category GetCategoryById(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public void UpdateCategory(Category entry)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public void UpdateCategory(Category entry)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }
