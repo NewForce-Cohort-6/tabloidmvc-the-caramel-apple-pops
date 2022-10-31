@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Controllers
 {
@@ -77,6 +79,33 @@ namespace TabloidMVC.Controllers
             var myPosts = _postRepository.GetAllUsersPosts(userId);
 
             return View(myPosts);
+        }
+
+        //GET: PostController/Delete
+        public IActionResult Delete(int id)
+        {
+            int userId = GetCurrentUserProfileId();
+
+            Post post = _postRepository.GetUserPostById(id, userId);
+
+            return View(post);
+        }
+
+        //POST: PostController/Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Post post)
+        {
+            try
+            {
+                _postRepository.DeletePost(id);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(post);
+            }
         }
 
         private int GetCurrentUserProfileId()
