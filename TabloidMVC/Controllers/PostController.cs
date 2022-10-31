@@ -82,11 +82,12 @@ namespace TabloidMVC.Controllers
         }
 
         //GET: PostController/Delete
+        //I believe we need to have GetUserPostById for now even though all posts are admin's.
         public IActionResult Delete(int id)
         {
             int userId = GetCurrentUserProfileId();
 
-            Post post = _postRepository.GetPublishedPostById(id);
+            Post post = _postRepository.GetUserPostById(id, userId);
 
             return View(post);
         }
