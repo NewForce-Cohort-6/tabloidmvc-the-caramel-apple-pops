@@ -60,6 +60,34 @@ namespace TabloidMVC.Controllers
                 return View(category);
             }
         }
+
+        //GET: CategoryController/Delete/5
+                public ActionResult Delete(int id)
+        {
+            Category category = _categoryRepository.GetCategoryById(id);
+
+            return View(category);
+        }
+
+
+        // POST: CategoryController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Category category)
+        {
+            try
+            {
+                category = _categoryRepository.GetCategoryById(id);
+                _categoryRepository.DeleteCategory(id);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(category);
+            }
+        }
+
     }
 }
 
