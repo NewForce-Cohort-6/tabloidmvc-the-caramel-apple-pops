@@ -62,20 +62,10 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        //public void DeleteCategory(int id)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-
-
         public Category GetCategoryById(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        //public void UpdateCategory(Category entry)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
     }
 }
