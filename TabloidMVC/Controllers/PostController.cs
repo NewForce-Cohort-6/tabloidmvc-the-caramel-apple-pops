@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using System.Collections.Generic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
@@ -66,6 +67,16 @@ namespace TabloidMVC.Controllers
                 vm.CategoryOptions = _categoryRepository.GetAll();
                 return View(vm);
             }
+        }
+
+        //This method will get all posts by the user who is currently logged in and return the view as a list similar to Posts.
+        public IActionResult MyIndex()
+        {
+            int userId = GetCurrentUserProfileId();
+
+            var myPosts = _postRepository.GetAllUsersPosts(userId);
+
+            return View(myPosts);
         }
 
         private int GetCurrentUserProfileId()
