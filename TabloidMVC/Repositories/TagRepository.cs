@@ -8,6 +8,7 @@ namespace TabloidMVC.Repositories
     {
         public TagRepository(IConfiguration config): base(config) { }
 
+        //get a list of all tags existing in the database table.
         public List<Tag> GetAll()
         {
             using (var conn = Connection)
@@ -33,5 +34,28 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+        //Allow (admin) users to create additional tags.  TODO: Limit to admin.
+        public void AddTag(Tag tag)
+        {
+            using (var conn=Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                    INSERT INTO Tag(Name)
+                                    OUTPUT INSERTED.ID
+                                    VALUES (@name)";
+                    cmd.Parameters.AddWithValue("@name", tag.Name);
+                    tag.Id = (int)cmd.ExecuteScalar();
+                }
+
+            }
+        }
+
+
+
+
     }
 }
