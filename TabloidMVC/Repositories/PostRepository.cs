@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Reflection.PortableExecutable;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.Data.SqlClient;
@@ -199,6 +200,7 @@ namespace TabloidMVC.Repositories
                                 UserProfileId = @UserProfileId
                             WHERE Id = @id";
 
+                    cmd.Parameters.AddWithValue("@id", post.Id);
                     cmd.Parameters.AddWithValue("@Title", post.Title);
                     cmd.Parameters.AddWithValue("@Content", post.Content);
                     cmd.Parameters.AddWithValue("@ImageLocation", DbUtils.ValueOrDBNull(post.ImageLocation));
@@ -207,7 +209,6 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@IsApproved", post.IsApproved);
                     cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
                     cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
-                    cmd.Parameters.AddWithValue("@id", post.Id);
 
                     cmd.ExecuteNonQuery();
                 }
