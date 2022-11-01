@@ -178,7 +178,7 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public Post UpdatePost(Post post)
+        public void UpdatePost(Post post)
         {
             using (SqlConnection conn = Connection)
             {
@@ -189,19 +189,25 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                             UPDATE Post
                             SET 
-                                [Name] = @name, 
-                                OwnerId = @ownerId, 
-                                Breed = @breed, 
-                                Notes = @notes, 
-                                ImageUrl = @imageUrl
+                                Title = @Title, 
+                                Content = @Content, 
+                                ImageLocation = @ImageLocation, 
+                                CreateDateTime = @CreateDateTime, 
+                                PublishDateTime = @PublishDateTime,
+                                IsApproved = @IsApproved,
+                                CategoryId = @CategoryId,
+                                UserProfileId = @UserProfileId
                             WHERE Id = @id";
 
-                    cmd.Parameters.AddWithValue("@name", dog.Name);
-                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
-                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
-                    cmd.Parameters.AddWithValue("@notes", dog.Notes);
-                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
-                    cmd.Parameters.AddWithValue("@id", dog.Id);
+                    cmd.Parameters.AddWithValue("@Title", post.Title);
+                    cmd.Parameters.AddWithValue("@Content", post.Content);
+                    cmd.Parameters.AddWithValue("@ImageLocation", DbUtils.ValueOrDBNull(post.ImageLocation));
+                    cmd.Parameters.AddWithValue("@CreateDateTime", post.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@PublishDateTime", DbUtils.ValueOrDBNull(post.PublishDateTime));
+                    cmd.Parameters.AddWithValue("@IsApproved", post.IsApproved);
+                    cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
+                    cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
+                    cmd.Parameters.AddWithValue("@id", post.Id);
 
                     cmd.ExecuteNonQuery();
                 }
