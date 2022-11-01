@@ -119,9 +119,5 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        //public void UpdateCategory(Category entry)
-        //{
-        //    throw new System.NotImplementedException();
-        //}
     }
 }

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using Microsoft.CodeAnalysis.Rename;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -91,6 +93,50 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        //This creates a list of all posts published by the user who is currently logged in.
+        public List<Post> GetAllUsersPosts(int userProfileId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT p.Id, p.Title, p.Content, 
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId, p.UserProfileId,
+                              c.[Name] AS CategoryName,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Post p
+                              LEFT JOIN Category c ON p.CategoryId = c.id
+                              LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                              LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
+                        AND p.UserProfileId = @UserProfileId
+                        ORDER By PublishDateTime DESC";
+                    
+                    cmd.Parameters.AddWithValue("@UserProfileId", userProfileId);
+
+                    var reader = cmd.ExecuteReader();
+
+                    var posts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        posts.Add(NewPostFromReader(reader));
+                    }
+
+                    reader.Close();
+
+                    return posts;
+                }
+            }
+        }
+
         public Post GetUserPostById(int id, int userProfileId)
         {
             using (var conn = Connection)
@@ -128,6 +174,27 @@ namespace TabloidMVC.Repositories
                     reader.Close();
 
                     return post;
+                }
+            }
+        }
+
+        //Delete post. This allows user to delete a post they have written.
+        public void DeletePost(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Post
+                            WHERE Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -197,5 +264,6 @@ namespace TabloidMVC.Repositories
                 }
             };
         }
+
     }
 }
