@@ -178,6 +178,36 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public Post UpdatePost(Post post)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Post
+                            SET 
+                                [Name] = @name, 
+                                OwnerId = @ownerId, 
+                                Breed = @breed, 
+                                Notes = @notes, 
+                                ImageUrl = @imageUrl
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@name", dog.Name);
+                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+                    cmd.Parameters.AddWithValue("@notes", dog.Notes);
+                    cmd.Parameters.AddWithValue("@imageUrl", dog.ImageUrl);
+                    cmd.Parameters.AddWithValue("@id", dog.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         //Delete post. This allows user to delete a post they have written.
         public void DeletePost(int id)
         {
@@ -229,6 +259,8 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        //Adding line: IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved"))
+        //Per Robert/Tommy, this is neccessary for Edit Post to work
         private Post NewPostFromReader(SqlDataReader reader)
         {
             return new Post()
@@ -240,6 +272,7 @@ namespace TabloidMVC.Repositories
                 CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                 PublishDateTime = DbUtils.GetNullableDateTime(reader, "PublishDateTime"),
                 CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved")),
                 Category = new Category()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
