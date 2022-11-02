@@ -98,6 +98,8 @@ namespace TabloidMVC.Controllers
 
         //POST PostController/Edit/id
         //This method will allow user to edit their own posts.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Post post)
         {
             try
