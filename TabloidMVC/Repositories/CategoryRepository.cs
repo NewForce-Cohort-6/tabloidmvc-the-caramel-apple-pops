@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TabloidMVC.Models;
@@ -62,9 +63,60 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void DeleteCategory(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Category
+                            WHERE Id = @id
+                        "
+                    ;
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
         public Category GetCategoryById(int id)
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+               conn.Open();
+              using (SqlCommand cmd = conn.CreateCommand())
+                {
+                 cmd.CommandText = @"
+                    SELECT Id, Name
+                        FROM Category
+                        WHERE Id = @id
+                        ";
+
+               cmd.Parameters.AddWithValue("@id", id);
+                 Category category = null;
+                   using (SqlDataReader reader = cmd.ExecuteReader())
+                 {
+                    while (reader.Read())
+                     {
+                          if (category == null)
+                           {
+                                category = new Category
+                              {
+                                   Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                    Name = reader.GetString(reader.GetOrdinal("Name"))
+                                };
+                            }
+                        }
+                    }
+                    return category;
+              }
+            }
         }
 
     }
