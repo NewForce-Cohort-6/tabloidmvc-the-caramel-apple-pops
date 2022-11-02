@@ -22,11 +22,22 @@ namespace TabloidMVC.Controllers
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
         }
-
+        //Need to use GetCurrentUserProfileId in this
+        //need to create a new viewmodel eg. PostUserViewModel()
+        //use that viewmodel in index
+        //then in the index view put a @if(model.currentuserid == item...) loop, print edit and delete button, otherwise not.
         public IActionResult Index()
         {
+            int userId = GetCurrentUserProfileId();
             var posts = _postRepository.GetAllPublishedPosts();
-            return View(posts);
+
+            PostUserViewModel vm = new PostUserViewModel()
+            {
+                UserProfileId = userId,
+                Posts = posts
+            };
+
+            return View(vm);
         }
 
         public IActionResult Details(int id)
