@@ -98,7 +98,8 @@ namespace TabloidMVC.Controllers
             }
             catch (Exception ex)
             {
-                return View(tag);
+                //If the tag is actively in use on a post, it cannot be deleted
+                return View("NoDelete");
             }
         }
     }
