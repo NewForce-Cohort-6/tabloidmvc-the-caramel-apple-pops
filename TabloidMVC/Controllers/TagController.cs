@@ -73,7 +73,7 @@ namespace TabloidMVC.Controllers
                 _tagRepo.EditTag(tag);
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
                 return View("NoEdit");
             }

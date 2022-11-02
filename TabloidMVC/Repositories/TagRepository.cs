@@ -112,7 +112,7 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"UPDATE Tag SET [Name] = @name WHERE Id = @tagId";
                     cmd.Parameters.AddWithValue("@name", tag.Name);
-                    cmd.Parameters.AddWithValue("@Id", tag.Id);
+                    cmd.Parameters.AddWithValue("@tagId", tag.Id);
 
                     cmd.ExecuteNonQuery();
                 }
