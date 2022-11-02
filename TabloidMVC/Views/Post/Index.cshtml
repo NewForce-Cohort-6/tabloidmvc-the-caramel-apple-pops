@@ -17,22 +17,22 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Title)
+                    Title
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.UserProfileId)
+                    Author
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CategoryId)
+                    Category
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.PublishDateTime)
+                    Published
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Posts)
             {
                 <tr>
                     <td>
@@ -52,12 +52,15 @@
                             <i class="fas fa-eye"></i>
                         </a>
                         @*implement an if loop*@
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Edit">
-                            <i class="fas fa-pencil-alt"></i>
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                        @if (Model.UserProfileId == item.UserProfileId)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }
