@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Reflection.PortableExecutable;
 using Microsoft.CodeAnalysis.Rename;
 using Microsoft.Data.SqlClient;
@@ -178,6 +179,42 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void UpdatePost(Post post)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Post
+                            SET 
+                                Title = @Title, 
+                                Content = @Content, 
+                                ImageLocation = @ImageLocation, 
+                                CreateDateTime = @CreateDateTime, 
+                                PublishDateTime = @PublishDateTime,
+                                IsApproved = @IsApproved,
+                                CategoryId = @CategoryId,
+                                UserProfileId = @UserProfileId
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", post.Id);
+                    cmd.Parameters.AddWithValue("@Title", post.Title);
+                    cmd.Parameters.AddWithValue("@Content", post.Content);
+                    cmd.Parameters.AddWithValue("@ImageLocation", DbUtils.ValueOrDBNull(post.ImageLocation));
+                    cmd.Parameters.AddWithValue("@CreateDateTime", post.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@PublishDateTime", DbUtils.ValueOrDBNull(post.PublishDateTime));
+                    cmd.Parameters.AddWithValue("@IsApproved", post.IsApproved);
+                    cmd.Parameters.AddWithValue("@CategoryId", post.CategoryId);
+                    cmd.Parameters.AddWithValue("@UserProfileId", post.UserProfileId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         //Delete post. This allows user to delete a post they have written.
         public void DeletePost(int id)
         {
@@ -229,6 +266,8 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        //Adding line: IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved"))
+        //Per Robert/Tommy, this is neccessary for Edit Post to work
         private Post NewPostFromReader(SqlDataReader reader)
         {
             return new Post()
@@ -240,6 +279,7 @@ namespace TabloidMVC.Repositories
                 CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                 PublishDateTime = DbUtils.GetNullableDateTime(reader, "PublishDateTime"),
                 CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved")),
                 Category = new Category()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
