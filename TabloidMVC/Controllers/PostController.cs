@@ -81,39 +81,6 @@ namespace TabloidMVC.Controllers
             return View(myPosts);
         }
 
-        //GET PostController/Edit/id
-        //This method will allow user to edit their own posts.
-        public IActionResult Edit(int id)
-        {
-            int userId = GetCurrentUserProfileId();
-            Post post = _postRepository.GetUserPostById(id, userId);
-
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
-        }
-
-        //POST PostController/Edit/id
-        //This method will allow user to edit their own posts.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Post post)
-        {
-            try
-            {
-                _postRepository.UpdatePost(post);
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                return View(post);
-            }
-        }
-
         //GET: PostController/Delete
         //I believe we need to have GetUserPostById for now even though all posts are admin's.
         public IActionResult Delete(int id)
@@ -147,5 +114,10 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+
+
+        public void TagPost(PostId, TagId)
+
+
     }
 }
