@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using TabloidMVC.Repositories;
 using TabloidMVC.Models;
 using System;
+using TabloidMVC.Models.ViewModels;
 
 namespace TabloidMVC.Controllers
 {
     public class TagController : Controller
     {
         private readonly ITagRepository _tagRepo;
+        private readonly IPostRepository _postRepo;
 
-        public TagController (ITagRepository tagRepo)
+        public TagController (ITagRepository tagRepo, IPostRepository postRepo)
         {
             _tagRepo = tagRepo;
+            _postRepo = postRepo;
         }
 
 
@@ -102,5 +105,8 @@ namespace TabloidMVC.Controllers
                 return View("NoDelete");
             }
         }
+
+
+
     }
 }

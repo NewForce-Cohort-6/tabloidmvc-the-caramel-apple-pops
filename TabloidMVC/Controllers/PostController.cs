@@ -16,11 +16,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITagRepository _tagRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _tagRepository = tagRepository;
         }
         //In order to conditionally render edit/delete buttons for the logged in user, we need to use GetCurrentUserProfileId in this method.
         //We have created new viewmodel PostUserViewModel()
@@ -43,16 +45,15 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+            List<Tag> tags = _tagRepository.GetTagsForPost(id);
+            var vm = new PostDetailsViewModel()
             {
-                int userId = GetCurrentUserProfileId();
-                post = _postRepository.GetUserPostById(id, userId);
-                if (post == null)
-                {
-                    return NotFound();
-                }
-            }
-            return View(post);
+                Post = post,
+                PostTags=tags
+
+            };
+           
+            return View(vm);
         }
 
         public IActionResult Create()
@@ -92,39 +93,6 @@ namespace TabloidMVC.Controllers
             return View(myPosts);
         }
 
-        //GET PostController/Edit/id
-        //This method will allow user to edit their own posts.
-        public IActionResult Edit(int id)
-        {
-            int userId = GetCurrentUserProfileId();
-            Post post = _postRepository.GetUserPostById(id, userId);
-
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
-        }
-
-        //POST PostController/Edit/id
-        //This method will allow user to edit their own posts.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Post post)
-        {
-            try
-            {
-                _postRepository.UpdatePost(post);
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                return View(post);
-            }
-        }
-
         //GET: PostController/Delete
         //I believe we need to have GetUserPostById for now even though all posts are admin's.
         public IActionResult Delete(int id)
@@ -158,5 +126,40 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+
+
+
+        //GET:PostController/TagPost/5
+        public ActionResult TagPost(int id)
+        {
+            Post thisPost = _postRepository.GetPublishedPostById(id);
+            List<Tag> tags = _tagRepository.GetAll();
+            TagPostViewModel vm = new TagPostViewModel()
+            {
+                Post = thisPost,
+                Tags = tags
+                
+
+            };
+
+            return View(vm);
+        }
+        //POST: PostController/TagPost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult TagPost(TagPostViewModel vm)
+        {
+            try
+            {
+                _tagRepository.TagPost(vm.PostTag);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+
     }
 }
