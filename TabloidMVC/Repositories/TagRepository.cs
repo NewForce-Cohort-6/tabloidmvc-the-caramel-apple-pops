@@ -121,7 +121,7 @@ namespace TabloidMVC.Repositories
 
 
 
-        public void TagPost(Tag tag, Post post)
+        public void TagPost(PostTag postTag)
         {
             using (var conn = Connection)
             {
@@ -129,8 +129,8 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO PostTag (PostId, TagId) VALUES (@postId, @tagId)";
-                    cmd.Parameters.AddWithValue("@postId", post.Id);
-                    cmd.Parameters.AddWithValue("@tagId", tag.Id);
+                    cmd.Parameters.AddWithValue("@postId", postTag.PostId);
+                    cmd.Parameters.AddWithValue("@tagId", postTag.TagId);
 
                     cmd.ExecuteNonQuery();
 

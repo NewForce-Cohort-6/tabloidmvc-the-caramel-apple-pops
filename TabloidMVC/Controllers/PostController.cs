@@ -128,6 +128,7 @@ namespace TabloidMVC.Controllers
             {
                 Post = thisPost,
                 Tags = tags
+                
 
             };
 
@@ -136,11 +137,11 @@ namespace TabloidMVC.Controllers
         //POST: PostController/TagPost/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult TagPost(Tag tag, Post post)
+        public ActionResult TagPost(TagPostViewModel vm)
         {
             try
             {
-                _tagRepository.TagPost(tag, post);
+                _tagRepository.TagPost(vm.PostTag);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
