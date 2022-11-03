@@ -4,7 +4,7 @@ namespace TabloidMVC.Models.ViewModels
 {
     public class PostDetailsViewModel
     {
-        Post Post { get; set; }
-        List<Tag> PostTags { get; set; }
+        public Post Post { get; set; }
+        public List<Tag> PostTags { get; set; }
     }
 }

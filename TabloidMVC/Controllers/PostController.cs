@@ -45,16 +45,15 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+            List<Tag> tags = _tagRepository.GetTagsForPost(id);
+            var vm = new PostDetailsViewModel()
             {
-                int userId = GetCurrentUserProfileId();
-                post = _postRepository.GetUserPostById(id, userId);
-                if (post == null)
-                {
-                    return NotFound();
-                }
-            }
-            return View(post);
+                Post = post,
+                PostTags=tags
+
+            };
+           
+            return View(vm);
         }
 
         public IActionResult Create()
