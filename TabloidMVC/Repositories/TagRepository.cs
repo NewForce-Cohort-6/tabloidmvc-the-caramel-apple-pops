@@ -102,5 +102,23 @@ namespace TabloidMVC.Repositories
         }
 
 
+
+        public void EditTag(Tag tag)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Tag SET [Name] = @name WHERE Id = @tagId";
+                    cmd.Parameters.AddWithValue("@name", tag.Name);
+                    cmd.Parameters.AddWithValue("@tagId", tag.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }   
+        }
+
+
     }
 }
