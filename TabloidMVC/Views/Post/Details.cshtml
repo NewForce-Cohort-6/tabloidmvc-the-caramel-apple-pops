@@ -16,6 +16,9 @@
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.PublishDateTime)</p>
             </div>
             <div class="row">
+                <a asp-action="TagPost" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Tag">
+                    <i class="fas fa-tag"></i>
+                </a>
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Edit">
                     <i class="fas fa-pencil-alt"></i>
                 </a>

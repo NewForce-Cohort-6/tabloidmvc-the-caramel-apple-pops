@@ -1,0 +1,11 @@
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace TabloidMVC.Models
+{
+    public class PostTag
+    {
+        public int Id { get; set; }
+        public int PostId { get; set; }
+        public int TagId { get; set; }
+    }
+}

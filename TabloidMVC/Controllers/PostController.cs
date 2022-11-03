@@ -16,11 +16,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITagRepository _tagRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _tagRepository = tagRepository;
         }
 
         public IActionResult Index()
@@ -116,7 +118,36 @@ namespace TabloidMVC.Controllers
         }
 
 
-        public void TagPost(PostId, TagId)
+
+        //GET:PostController/TagPost/5
+        public ActionResult TagPost(int id)
+        {
+            Post thisPost = _postRepository.GetPublishedPostById(id);
+            List<Tag> tags = _tagRepository.GetAll();
+            TagPostViewModel vm = new TagPostViewModel()
+            {
+                Post = thisPost,
+                Tags = tags
+
+            };
+
+            return View(vm);
+        }
+        //POST: PostController/TagPost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult TagPost(Tag tag, Post post)
+        {
+            try
+            {
+                _tagRepository.TagPost(tag, post);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
 
 
     }
