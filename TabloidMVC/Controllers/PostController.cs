@@ -22,11 +22,22 @@ namespace TabloidMVC.Controllers
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
         }
-
+        //In order to conditionally render edit/delete buttons for the logged in user, we need to use GetCurrentUserProfileId in this method.
+        //We have created new viewmodel PostUserViewModel()
+        //We are using that viewmodel in Index method
+        //then in the index view we have an @if loop to check user id and print edit and delete button if they match the post user id, otherwise not.
         public IActionResult Index()
         {
+            int userId = GetCurrentUserProfileId();
             var posts = _postRepository.GetAllPublishedPosts();
-            return View(posts);
+
+            PostUserViewModel vm = new PostUserViewModel()
+            {
+                UserProfileId = userId,
+                Posts = posts
+            };
+
+            return View(vm);
         }
 
         public IActionResult Details(int id)
